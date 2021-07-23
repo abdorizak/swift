@@ -194,6 +194,12 @@ TypeChecker::lookupPrecedenceGroupForInfixOperator(DeclContext *DC, Expr *E) {
     return lookupPrecedenceGroupForOperator(DC, name, MRE->getLoc());
   }
 
+  // FIXME: Using UnresovledDeclRefExpr to delay operator lookup is a hack.
+  if (auto *UDRE = dyn_cast<UnresolvedDeclRefExpr>(E)) {
+    Identifier name = UDRE->getName().getBaseIdentifier();
+    return lookupPrecedenceGroupForOperator(DC, name, UDRE->getLoc());
+  }
+
   // If E is already an ErrorExpr, then we've diagnosed it as invalid already,
   // otherwise emit an error.
   if (!isa<ErrorExpr>(E))

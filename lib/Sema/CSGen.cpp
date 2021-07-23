@@ -1371,6 +1371,9 @@ namespace {
       // This is an error case, where we're trying to use type inference
       // to help us determine which declaration the user meant to refer to.
       // FIXME: Do we need to note that we're doing some kind of recovery?
+
+      // NOTE: Currently, binary operators go through this path, and it
+      // is not an error case.
       return CS.createTypeVariable(CS.getConstraintLocator(expr),
                                    TVO_CanBindToLValue |
                                    TVO_CanBindToNoEscape);
@@ -2710,6 +2713,62 @@ namespace {
         CS.setFavoredType(expr, fixedType.getPointer());
         resultType = fixedType;
       }
+
+      return resultType;
+    }
+
+    Type visitBinaryExpr(BinaryExpr *expr) {
+      auto &ctx = CS.getASTContext();
+      auto *operatorRef = cast<UnresolvedDeclRefExpr>(expr->getFn());
+
+      SmallVector<Identifier, 4> scratch;
+      associateArgumentLabels(
+          CS.getConstraintLocator(expr),
+          {expr->getArgumentLabels(scratch),
+           expr->getUnlabeledTrailingClosureIndex()},
+          /*labelsArePermanent=*/isa<CallExpr>(expr));
+
+      // The result type is a fresh type variable.
+      Type resultType = CS.createTypeVariable(
+          CS.getConstraintLocator(expr, ConstraintLocator::FunctionResult),
+          TVO_CanBindToNoEscape);
+
+      auto *lhs = expr->getLHS();
+      auto *rhs = expr->getRHS();
+
+      // The base type for operator lookup is a fresh type variable.
+      Type baseType = CS.createTypeVariable(
+          CS.getConstraintLocator(expr, ConstraintLocator::MemberRefBase),
+          TVO_CanBindToNoEscape);
+
+      auto createBindConstraint = [&](Type type, ASTNode anchor, bool favored) -> Constraint * {
+        auto *constraint = Constraint::create(CS, ConstraintKind::Bind, baseType, type,
+            CS.getConstraintLocator(anchor, ConstraintLocator::MemberRefBase));
+        constraint->setFavored(favored);
+        return constraint;
+      };
+
+      SmallVector<Constraint *, 3> baseTypes;
+      baseTypes.push_back(createBindConstraint(CS.getType(lhs), lhs, /*favored=*/true));
+      baseTypes.push_back(createBindConstraint(CS.getType(rhs), rhs, /*favored=*/true));
+      // Only attempt the result type as the operator base if the solver does not find
+      // a solution using one of the argument types.
+      baseTypes.push_back(createBindConstraint(resultType, expr, /*favored=*/false));
+
+      CS.addDisjunctionConstraint(baseTypes, CS.getConstraintLocator(operatorRef));
+
+      baseType = MetatypeType::get(baseType, ctx);
+      CS.addValueMemberConstraint(baseType, operatorRef->getName(), CS.getType(operatorRef),
+                                  CurDC, FunctionRefKind::SingleApply, /*outerAlternatives*/{},
+                                  CS.getConstraintLocator(operatorRef, ConstraintLocator::Member));
+
+      SmallVector<AnyFunctionType::Param, 8> params;
+      AnyFunctionType::decomposeInput(CS.getType(expr->getArg()), params);
+      FunctionType::ExtInfo extInfo;
+      CS.addConstraint(ConstraintKind::ApplicableFunction,
+                       FunctionType::get(params, resultType, extInfo),
+                       CS.getType(expr->getFn()),
+        CS.getConstraintLocator(expr, ConstraintLocator::ApplyFunction));
 
       return resultType;
     }

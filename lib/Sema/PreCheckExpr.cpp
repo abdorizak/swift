@@ -390,6 +390,12 @@ Expr *TypeChecker::resolveDeclRefExpr(UnresolvedDeclRefExpr *UDRE,
   DeclNameRef Name = UDRE->getName();
   SourceLoc Loc = UDRE->getLoc();
 
+  // Don't to resolve operator references to their full, global overload set.
+  // FIXME: hack!
+  if (UDRE->getRefKind() == DeclRefKind::BinaryOperator) {
+    return UDRE;
+  }
+
   DeclNameRef LookupName = Name;
   if (Name.isCompoundName()) {
     auto &context = DC->getASTContext();
