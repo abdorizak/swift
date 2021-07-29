@@ -130,6 +130,9 @@ SIMPLE_LOCATOR_PATH_ELT(Member)
 /// The base of a member expression.
 SIMPLE_LOCATOR_PATH_ELT(MemberRefBase)
 
+/// The base of an operator reference.
+SIMPLE_LOCATOR_PATH_ELT(OperatorRefBase)
+
 /// This is referring to a type produced by opening a generic type at the
 /// base of the locator.
 CUSTOM_LOCATOR_PATH_ELT(OpenedGeneric)

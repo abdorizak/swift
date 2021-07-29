@@ -53,6 +53,7 @@ unsigned LocatorPathElt::getNewSummaryFlags() const {
   case ConstraintLocator::OptionalPayload:
   case ConstraintLocator::Member:
   case ConstraintLocator::MemberRefBase:
+  case ConstraintLocator::OperatorRefBase:
   case ConstraintLocator::UnresolvedMember:
   case ConstraintLocator::ParentType:
   case ConstraintLocator::ExistentialSuperclassType:
@@ -356,6 +357,10 @@ void ConstraintLocator::dump(SourceManager *sm, raw_ostream &out) const {
 
     case MemberRefBase:
       out << "member reference base";
+      break;
+
+    case OperatorRefBase:
+      out << "operator ref base";
       break;
 
     case TupleType: {

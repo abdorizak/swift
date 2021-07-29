@@ -750,6 +750,9 @@ bool DisjunctionStep::shortCircuitDisjunctionAt(
   if (currentChoice->getKind() == ConstraintKind::CheckedCast)
     return true;
 
+  if (currentChoice->getLocator()->isLastElement<LocatorPathElt::OperatorRefBase>())
+    return true;
+
   return false;
 }
 

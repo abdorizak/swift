@@ -2738,12 +2738,12 @@ namespace {
 
       // The base type for operator lookup is a fresh type variable.
       Type baseType = CS.createTypeVariable(
-          CS.getConstraintLocator(expr, ConstraintLocator::MemberRefBase),
+          CS.getConstraintLocator(expr, ConstraintLocator::OperatorRefBase),
           TVO_CanBindToNoEscape);
 
       auto createBindConstraint = [&](Type type, ASTNode anchor, bool favored) -> Constraint * {
         auto *constraint = Constraint::create(CS, ConstraintKind::Bind, baseType, type,
-            CS.getConstraintLocator(anchor, ConstraintLocator::MemberRefBase));
+            CS.getConstraintLocator(anchor, ConstraintLocator::OperatorRefBase));
         constraint->setFavored(favored);
         return constraint;
       };
