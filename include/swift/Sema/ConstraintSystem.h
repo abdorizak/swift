@@ -1639,7 +1639,7 @@ private:
   // If the pattern contains a single variable that has an attached
   // property wrapper, set up the initializer expression to initialize
   // the backing storage.
-  void maybeApplyPropertyWrapper();
+  void maybeApplyPropertyWrapper(PropertyWrapperInitKind initKind);
 
 public:
   SolutionApplicationTarget(Expr *expr, DeclContext *dc,
@@ -1708,7 +1708,7 @@ public:
 
   /// Form a target for a synthesized property wrapper initializer.
   static SolutionApplicationTarget forPropertyWrapperInitializer(
-      VarDecl *wrappedVar, DeclContext *dc, Expr *initializer);
+      VarDecl *wrappedVar, DeclContext *dc, Expr *initializer, PropertyWrapperInitKind kind);
 
   Expr *getAsExpr() const {
     switch (kind) {

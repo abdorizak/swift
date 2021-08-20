@@ -5284,7 +5284,7 @@ SolutionApplicationTarget::SolutionApplicationTarget(
   expression.initialization.patternBindingIndex = 0;
 }
 
-void SolutionApplicationTarget::maybeApplyPropertyWrapper() {
+void SolutionApplicationTarget::maybeApplyPropertyWrapper(PropertyWrapperInitKind initKind) {
   assert(kind == Kind::expression);
   assert(expression.contextualPurpose == CTP_Initialization);
 
@@ -5311,9 +5311,9 @@ void SolutionApplicationTarget::maybeApplyPropertyWrapper() {
     if (!isa<PropertyWrapperValuePlaceholderExpr>(initializer)) {
       expression.propertyWrapper.hasInitialWrappedValue = true;
     }
-    // Form init(wrappedValue:) call(s).
+    // Form init(wrappedValue:) or init(projectedValue:) call(s).
     Expr *wrappedInitializer = buildPropertyWrapperInitCall(
-        singleVar, Type(), initializer, PropertyWrapperInitKind::WrappedValue,
+        singleVar, Type(), initializer, initKind,
         [&](ApplyExpr *innermostInit) {
           expression.propertyWrapper.innermostWrappedValueInit = innermostInit;
         });
@@ -5389,7 +5389,7 @@ SolutionApplicationTarget SolutionApplicationTarget::forInitialization(
       /*isDiscarded=*/false);
   target.expression.pattern = pattern;
   target.expression.bindPatternVarsOneWay = bindPatternVarsOneWay;
-  target.maybeApplyPropertyWrapper();
+  target.maybeApplyPropertyWrapper(PropertyWrapperInitKind::WrappedValue);
   return target;
 }
 
@@ -5426,7 +5426,7 @@ SolutionApplicationTarget::forUninitializedWrappedVar(VarDecl *wrappedVar) {
 
 SolutionApplicationTarget
 SolutionApplicationTarget::forPropertyWrapperInitializer(
-    VarDecl *wrappedVar, DeclContext *dc, Expr *initializer) {
+    VarDecl *wrappedVar, DeclContext *dc, Expr *initializer, PropertyWrapperInitKind kind) {
   SolutionApplicationTarget target(
       initializer, dc, CTP_Initialization, wrappedVar->getType(),
       /*isDiscarded=*/false);
@@ -5437,7 +5437,7 @@ SolutionApplicationTarget::forPropertyWrapperInitializer(
     target.expression.initialization.patternBindingIndex = index;
     target.expression.pattern = patternBinding->getPattern(index);
   }
-  target.maybeApplyPropertyWrapper();
+  target.maybeApplyPropertyWrapper(kind);
   return target;
 }
 

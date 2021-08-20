@@ -2584,7 +2584,8 @@ static VarDecl *synthesizePropertyWrapperProjectionVar(
 }
 
 static void typeCheckSynthesizedWrapperInitializer(VarDecl *wrappedVar,
-                                                   Expr *&initializer) {
+                                                   Expr *&initializer,
+                                                   PropertyWrapperInitKind initKind) {
   auto *dc = wrappedVar->getInnermostDeclContext();
   auto &ctx = wrappedVar->getASTContext();
   auto *initContext = new (ctx) PropertyWrapperInitializer(
@@ -2593,7 +2594,7 @@ static void typeCheckSynthesizedWrapperInitializer(VarDecl *wrappedVar,
   // Type-check the initialization.
   using namespace constraints;
   auto target = SolutionApplicationTarget::forPropertyWrapperInitializer(
-      wrappedVar, initContext, initializer);
+      wrappedVar, initContext, initializer, initKind);
   auto result = TypeChecker::typeCheckExpression(target);
   if (!result)
     return;
@@ -2891,7 +2892,7 @@ PropertyWrapperInitializerInfoRequest::evaluate(Evaluator &evaluator,
         // FIXME: Record this expression somewhere so that DI can perform the
         // initialization itself.
         Expr *defaultInit = nullptr;
-        typeCheckSynthesizedWrapperInitializer(var, defaultInit);
+        typeCheckSynthesizedWrapperInitializer(var, defaultInit, PropertyWrapperInitKind::Default);
         pbd->setInit(0, defaultInit);
         pbd->setInitializerChecked(0);
 
@@ -2961,7 +2962,8 @@ PropertyWrapperInitializerInfoRequest::evaluate(Evaluator &evaluator,
              !var->getName().hasDollarPrefix()) {
     wrappedValueInit = PropertyWrapperValuePlaceholderExpr::create(
         ctx, var->getSourceRange(), var->getType(), /*wrappedValue=*/nullptr);
-    typeCheckSynthesizedWrapperInitializer(var, wrappedValueInit);
+    typeCheckSynthesizedWrapperInitializer(var, wrappedValueInit,
+                                           PropertyWrapperInitKind::WrappedValue);
   }
 
   return PropertyWrapperInitializerInfo(wrappedValueInit, projectedValueInit);
