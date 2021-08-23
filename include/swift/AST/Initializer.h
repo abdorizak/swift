@@ -22,6 +22,7 @@
 
 #include "swift/AST/DeclContext.h"
 #include "swift/AST/Decl.h"
+#include "swift/AST/PropertyWrappers.h"
 
 namespace swift {
 class PatternBindingDecl;
@@ -202,25 +203,18 @@ public:
 /// A property wrapper initialization expression.  The parent context is the
 /// function or closure which owns the property wrapper.
 class PropertyWrapperInitializer : public Initializer {
-public:
-  enum class Kind {
-    WrappedValue,
-    ProjectedValue
-  };
-
-private:
   VarDecl *wrappedVar;
-  Kind kind;
+  PropertyWrapperInitKind kind;
 
 public:
   explicit PropertyWrapperInitializer(DeclContext *parent, VarDecl *wrappedVar,
-                                      Kind kind)
+                                      PropertyWrapperInitKind kind)
       : Initializer(InitializerKind::PropertyWrapper, parent),
         wrappedVar(wrappedVar), kind(kind) {}
 
   VarDecl *getWrappedVar() const { return wrappedVar; }
 
-  Kind getKind() const { return kind; }
+  PropertyWrapperInitKind getKind() const { return kind; }
 
   static bool classof(const DeclContext *DC) {
     if (auto init = dyn_cast<Initializer>(DC))

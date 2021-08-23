@@ -5284,7 +5284,8 @@ SolutionApplicationTarget::SolutionApplicationTarget(
   expression.initialization.patternBindingIndex = 0;
 }
 
-void SolutionApplicationTarget::maybeApplyPropertyWrapper(PropertyWrapperInitKind initKind) {
+void SolutionApplicationTarget::maybeApplyPropertyWrapper(Type backingType,
+                                                          PropertyWrapperInitKind initKind) {
   assert(kind == Kind::expression);
   assert(expression.contextualPurpose == CTP_Initialization);
 
@@ -5313,7 +5314,7 @@ void SolutionApplicationTarget::maybeApplyPropertyWrapper(PropertyWrapperInitKin
     }
     // Form init(wrappedValue:) or init(projectedValue:) call(s).
     Expr *wrappedInitializer = buildPropertyWrapperInitCall(
-        singleVar, Type(), initializer, initKind,
+        singleVar, backingType, initializer, initKind,
         [&](ApplyExpr *innermostInit) {
           expression.propertyWrapper.innermostWrappedValueInit = innermostInit;
         });
@@ -5389,7 +5390,7 @@ SolutionApplicationTarget SolutionApplicationTarget::forInitialization(
       /*isDiscarded=*/false);
   target.expression.pattern = pattern;
   target.expression.bindPatternVarsOneWay = bindPatternVarsOneWay;
-  target.maybeApplyPropertyWrapper(PropertyWrapperInitKind::WrappedValue);
+  target.maybeApplyPropertyWrapper(Type(), PropertyWrapperInitKind::WrappedValue);
   return target;
 }
 
@@ -5426,7 +5427,8 @@ SolutionApplicationTarget::forUninitializedWrappedVar(VarDecl *wrappedVar) {
 
 SolutionApplicationTarget
 SolutionApplicationTarget::forPropertyWrapperInitializer(
-    VarDecl *wrappedVar, DeclContext *dc, Expr *initializer, PropertyWrapperInitKind kind) {
+    VarDecl *wrappedVar, DeclContext *dc, Type storageType,
+    Expr *initializer, PropertyWrapperInitKind kind) {
   SolutionApplicationTarget target(
       initializer, dc, CTP_Initialization, wrappedVar->getType(),
       /*isDiscarded=*/false);
@@ -5437,7 +5439,7 @@ SolutionApplicationTarget::forPropertyWrapperInitializer(
     target.expression.initialization.patternBindingIndex = index;
     target.expression.pattern = patternBinding->getPattern(index);
   }
-  target.maybeApplyPropertyWrapper(kind);
+  target.maybeApplyPropertyWrapper(storageType, kind);
   return target;
 }
 

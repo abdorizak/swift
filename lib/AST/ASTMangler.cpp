@@ -2151,12 +2151,15 @@ void ASTMangler::appendContext(const DeclContext *ctx, StringRef useModuleName) 
     case InitializerKind::PropertyWrapper: {
       auto wrapperInit = cast<PropertyWrapperInitializer>(ctx);
       switch (wrapperInit->getKind()) {
-      case PropertyWrapperInitializer::Kind::WrappedValue:
+      case PropertyWrapperInitKind::InitialValue:
+      case PropertyWrapperInitKind::WrappedValue:
         appendBackingInitializerEntity(wrapperInit->getWrappedVar());
         break;
-      case PropertyWrapperInitializer::Kind::ProjectedValue:
+      case PropertyWrapperInitKind::ProjectedValue:
         appendInitFromProjectedValueEntity(wrapperInit->getWrappedVar());
         break;
+      case PropertyWrapperInitKind::Default:
+        llvm_unreachable("unsupported property wrapper init kind");
       }
       return;
     }

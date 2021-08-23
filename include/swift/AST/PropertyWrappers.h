@@ -26,6 +26,7 @@ namespace swift {
 class ConstructorDecl;
 class CustomAttr;
 class Expr;
+class PropertyWrapperValuePlaceholderExpr;
 class VarDecl;
 class OpaqueValueExpr;
 
