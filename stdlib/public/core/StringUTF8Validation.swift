@@ -1,9 +1,9 @@
 private func _isUTF8MultiByteLeading(_ x: UInt8) -> Bool {
-  return (0xC2...0xF4).contains(x)
+  return (0xC2...(0xF4 as UInt8)).contains(x)
 }
 
 private func _isNotOverlong_F0(_ x: UInt8) -> Bool {
-  return (0x90...0xBF).contains(x)
+  return (0x90...(0xBF as UInt8)).contains(x)
 }
 
 private func _isNotOverlong_F4(_ x: UInt8) -> Bool {
@@ -11,7 +11,7 @@ private func _isNotOverlong_F4(_ x: UInt8) -> Bool {
 }
 
 private func _isNotOverlong_E0(_ x: UInt8) -> Bool {
-  return (0xA0...0xBF).contains(x)
+  return (0xA0...(0xBF as UInt8)).contains(x)
 }
 
 private func _isNotOverlong_ED(_ x: UInt8) -> Bool {
@@ -109,14 +109,14 @@ internal func validateUTF8(_ buf: UnsafeBufferPointer<UInt8>) -> UTF8ValidationR
         throw UTF8ValidationError()
       }
       switch cu {
-      case 0xC2...0xDF:
+      case 0xC2...(0xDF as UInt8):
         try guaranteeContinuation()
         lastValidIndex &+= 2
       case 0xE0:
         try guaranteeIn(_isNotOverlong_E0)
         try guaranteeContinuation()
         lastValidIndex &+= 3
-      case 0xE1...0xEC:
+      case 0xE1...(0xEC as UInt8):
         try guaranteeContinuation()
         try guaranteeContinuation()
         lastValidIndex &+= 3
@@ -124,7 +124,7 @@ internal func validateUTF8(_ buf: UnsafeBufferPointer<UInt8>) -> UTF8ValidationR
         try guaranteeIn(_isNotOverlong_ED)
         try guaranteeContinuation()
         lastValidIndex &+= 3
-      case 0xEE...0xEF:
+      case 0xEE...(0xEF as UInt8):
         try guaranteeContinuation()
         try guaranteeContinuation()
         lastValidIndex &+= 3
@@ -133,7 +133,7 @@ internal func validateUTF8(_ buf: UnsafeBufferPointer<UInt8>) -> UTF8ValidationR
         try guaranteeContinuation()
         try guaranteeContinuation()
         lastValidIndex &+= 4
-      case 0xF1...0xF3:
+      case 0xF1...(0xF3 as UInt8):
         try guaranteeContinuation()
         try guaranteeContinuation()
         try guaranteeContinuation()

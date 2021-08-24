@@ -31,7 +31,7 @@ public struct _ValidUTF8Buffer {
   @inlinable
   internal init(_containing e: Element) {
     _internalInvariant(
-      e != 192 && e != 193 && !(245...255).contains(e), "invalid UTF8 byte")
+      e != 192 && e != 193 && !(245...(255 as UInt8)).contains(e), "invalid UTF8 byte")
     _biasedBits = UInt32(truncatingIfNeeded: e &+ 1)
   }
 }
@@ -165,7 +165,7 @@ extension _ValidUTF8Buffer: RangeReplaceableCollection {
   public mutating func append(_ e: Element) {
     _debugPrecondition(count + 1 <= capacity)
     _internalInvariant(
-      e != 192 && e != 193 && !(245...255).contains(e), "invalid UTF8 byte")
+      e != 192 && e != 193 && !(245...(255 as UInt8)).contains(e), "invalid UTF8 byte")
     _biasedBits |= UInt32(e &+ 1) &<< (count &<< 3)
   }
 

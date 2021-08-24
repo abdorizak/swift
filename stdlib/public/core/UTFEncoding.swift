@@ -67,7 +67,7 @@ where Encoding.EncodedScalar: RangeReplaceableCollection {
     // Find one unicode scalar.
     let (isValid, scalarBitCount) = _parseMultipleCodeUnits()
     _internalInvariant(scalarBitCount % numericCast(Encoding.CodeUnit.bitWidth) == 0)
-    _internalInvariant(1...4 ~= scalarBitCount / 8)
+    _internalInvariant(1...(4 as UInt8) ~= scalarBitCount / 8)
     _internalInvariant(scalarBitCount <= _buffer._bitCount)
     
     // Consume the decoded bytes (or maximal subpart of ill-formed sequence).

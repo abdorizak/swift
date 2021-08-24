@@ -513,6 +513,6 @@ internal class __ContiguousArrayStorageBase
   @inlinable
   deinit {
     _internalInvariant(
-      self !== _emptyArrayStorage, "Deallocating empty array storage?!")
+      (self as AnyObject) !== _emptyArrayStorage, "Deallocating empty array storage?!")
   }
 }

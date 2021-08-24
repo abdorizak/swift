@@ -79,7 +79,7 @@ public class AnyKeyPath: Hashable, _AppendKeyPath {
   
   public static func ==(a: AnyKeyPath, b: AnyKeyPath) -> Bool {
     // Fast-path identical objects
-    if a === b {
+    if (a as AnyObject) === b {
       return true
     }
     // Short-circuit differently-typed key paths

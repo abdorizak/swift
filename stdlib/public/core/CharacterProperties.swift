@@ -83,7 +83,7 @@ extension Character {
   @inlinable
   public var isNewline: Bool {
     switch _firstScalar.value {
-      case 0x000A...0x000D /* LF ... CR */: return true
+      case 0x000A...(0x000D as UInt32) /* LF ... CR */: return true
       case 0x0085 /* NEXT LINE (NEL) */: return true
       case 0x2028 /* LINE SEPARATOR */: return true
       case 0x2029 /* PARAGRAPH SEPARATOR */: return true
@@ -170,17 +170,17 @@ extension Character {
     let value = _firstScalar.value
     switch value {
       // DIGIT ZERO..DIGIT NINE
-      case 0x0030...0x0039: return Int(value &- 0x0030)
+      case 0x0030...(0x0039 as UInt32): return Int(value &- 0x0030)
       // LATIN CAPITAL LETTER A..LATIN CAPITAL LETTER F
-      case 0x0041...0x0046: return Int((value &+ 10) &- 0x0041)
+      case 0x0041...(0x0046 as UInt32): return Int((value &+ 10) &- 0x0041)
       // LATIN SMALL LETTER A..LATIN SMALL LETTER F
-      case 0x0061...0x0066: return Int((value &+ 10) &- 0x0061)
+      case 0x0061...(0x0066 as UInt32): return Int((value &+ 10) &- 0x0061)
       // FULLWIDTH DIGIT ZERO..FULLWIDTH DIGIT NINE
-      case 0xFF10...0xFF19: return Int(value &- 0xFF10)
+      case 0xFF10...(0xFF19 as UInt32): return Int(value &- 0xFF10)
       // FULLWIDTH LATIN CAPITAL LETTER A..FULLWIDTH LATIN CAPITAL LETTER F
-      case 0xFF21...0xFF26: return Int((value &+ 10) &- 0xFF21)
+      case 0xFF21...(0xFF26 as UInt32): return Int((value &+ 10) &- 0xFF21)
       // FULLWIDTH LATIN SMALL LETTER A..FULLWIDTH LATIN SMALL LETTER F
-      case 0xFF41...0xFF46: return Int((value &+ 10) &- 0xFF41)
+      case 0xFF41...(0xFF46 as UInt32): return Int((value &+ 10) &- 0xFF41)
 
       default: return nil
     }

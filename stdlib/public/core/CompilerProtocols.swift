@@ -154,6 +154,32 @@ public func == <T: RawRepresentable>(lhs: T, rhs: T) -> Bool
   return lhs.rawValue == rhs.rawValue
 }
 
+public extension RawRepresentable {
+  @inlinable
+  static func == (lhs: Self, rhs: Self) -> Bool
+    where Self.RawValue: Equatable {
+    return lhs.rawValue == rhs.rawValue
+  }
+
+  @inlinable // trivial-implementation
+  static func != (lhs: Self, rhs: Self) -> Bool
+    where Self.RawValue: Equatable {
+    return lhs.rawValue != rhs.rawValue
+  }
+
+  @inlinable
+  static func == (lhs: Self, rhs: Self) -> Bool
+    where Self: Equatable {
+    return lhs.rawValue == rhs.rawValue
+  }
+
+  @inlinable // trivial-implementation
+  static func != (lhs: Self, rhs: Self) -> Bool
+    where Self: Equatable {
+    return lhs.rawValue != rhs.rawValue
+  }
+}
+
 /// Returns a Boolean value indicating whether the two arguments are not equal.
 ///
 /// - Parameters:

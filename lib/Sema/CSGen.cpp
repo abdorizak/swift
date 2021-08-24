@@ -2719,7 +2719,10 @@ namespace {
 
     Type visitBinaryExpr(BinaryExpr *expr) {
       auto &ctx = CS.getASTContext();
-      auto *operatorRef = cast<UnresolvedDeclRefExpr>(expr->getFn());
+      auto *operatorRef = dyn_cast<UnresolvedDeclRefExpr>(expr->getFn());
+
+      if (!operatorRef)
+        return visitApplyExpr(expr);
 
       SmallVector<Identifier, 4> scratch;
       associateArgumentLabels(
@@ -2742,7 +2745,7 @@ namespace {
           TVO_CanBindToNoEscape);
 
       auto createBindConstraint = [&](Type type, ASTNode anchor, bool favored) -> Constraint * {
-        auto *constraint = Constraint::create(CS, ConstraintKind::Bind, baseType, type,
+        auto *constraint = Constraint::create(CS, ConstraintKind::Equal, baseType, type,
             CS.getConstraintLocator(anchor, ConstraintLocator::OperatorRefBase));
         constraint->setFavored(favored);
         return constraint;
@@ -2763,7 +2766,7 @@ namespace {
                                   CS.getConstraintLocator(operatorRef, ConstraintLocator::Member));
 
       SmallVector<AnyFunctionType::Param, 8> params;
-      AnyFunctionType::decomposeInput(CS.getType(expr->getArg()), params);
+      AnyFunctionType::decomposeTuple(CS.getType(expr->getArg()), params);
       FunctionType::ExtInfo extInfo;
       CS.addConstraint(ConstraintKind::ApplicableFunction,
                        FunctionType::get(params, resultType, extInfo),

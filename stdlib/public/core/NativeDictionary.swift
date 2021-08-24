@@ -603,7 +603,7 @@ extension _NativeDictionary where Value: Equatable {
   @inlinable
   @inline(__always)
   func isEqual(to other: _NativeDictionary) -> Bool {
-    if self._storage === other._storage { return true }
+    if (self._storage as AnyObject) === other._storage { return true }
     if self.count != other.count { return false }
 
     for (key, value) in self {

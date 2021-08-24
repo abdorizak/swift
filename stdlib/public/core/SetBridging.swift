@@ -35,7 +35,7 @@ extension _NativeSet { // Bridging
     // Temporary var for SOME type safety.
     let nsSet: _NSSetCore
 
-    if _storage === __RawSetStorage.empty || count == 0 {
+    if (_storage as AnyObject) === __RawSetStorage.empty || count == 0 {
       nsSet = __RawSetStorage.empty
     } else if _isBridgedVerbatimToObjectiveC(Element.self) {
       nsSet = unsafeDowncast(_storage, to: _SetStorage<Element>.self)

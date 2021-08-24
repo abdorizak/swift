@@ -325,6 +325,12 @@ public func ~= <T: Equatable>(a: T, b: T) -> Bool {
   return a == b
 }
 
+public extension Equatable {
+  static func ~= (a: Self, b: Self) -> Bool {
+    return a == b
+  }
+}
+
 //===----------------------------------------------------------------------===//
 // Standard precedence groups
 //===----------------------------------------------------------------------===//

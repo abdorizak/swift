@@ -258,6 +258,35 @@ public func === (lhs: AnyObject?, rhs: AnyObject?) -> Bool {
   }
 }
 
+@inlinable // trivial-implementation
+public func === (lhs: AnyObject, rhs: AnyObject) -> Bool {
+  return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
+}
+
+@inlinable // trivial-implementation
+public func !== (lhs: AnyObject, rhs: AnyObject) -> Bool {
+  return !(lhs === rhs)
+}
+
+extension Optional where Wrapped == AnyObject {
+  @inlinable // trivial-implementation
+  public static func === (lhs: AnyObject?, rhs: AnyObject?) -> Bool {
+    switch (lhs, rhs) {
+    case let (l?, r?):
+      return ObjectIdentifier(l) == ObjectIdentifier(r)
+    case (nil, nil):
+      return true
+    default:
+      return false
+    }
+  }
+
+  @inlinable // trivial-implementation
+  public static func !== (lhs: AnyObject?, rhs: AnyObject?) -> Bool {
+    return !(lhs === rhs)
+  }
+}
+
 /// Returns a Boolean value indicating whether two references point to
 /// different object instances.
 ///

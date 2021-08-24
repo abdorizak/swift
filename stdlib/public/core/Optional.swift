@@ -617,6 +617,30 @@ public func ?? <T>(optional: T?, defaultValue: @autoclosure () throws -> T)
   }
 }
 
+extension Optional {
+  @_transparent
+  public static func ?? (optional: Self, defaultValue: @autoclosure () throws -> Wrapped)
+      rethrows -> Wrapped {
+    switch optional {
+    case .some(let value):
+      return value
+    case .none:
+      return try defaultValue()
+    }
+  }
+
+  @_transparent
+  public static func ?? (optional: Self, defaultValue: @autoclosure () throws -> Self)
+      rethrows -> Self {
+    switch optional {
+    case .some(let value):
+      return value
+    case .none:
+      return try defaultValue()
+    }
+  }
+}
+
 /// Performs a nil-coalescing operation, returning the wrapped value of an
 /// `Optional` instance or a default `Optional` value.
 ///

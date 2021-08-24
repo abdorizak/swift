@@ -7137,6 +7137,29 @@ performMemberLookup(ConstraintKind constraintKind, DeclNameRef memberName,
   MemberLookupResult result;
   result.OverallResult = MemberLookupResult::HasResults;
 
+
+  if (auto *ref = getAsExpr<UnresolvedDeclRefExpr>(memberLocator->getAnchor())) {
+    if (!instanceTy->is<NominalType>()) {
+//    if (instanceTy->is<TupleType>() || instanceTy->is<AnyFunctionType>() ||
+//        instanceTy->is<BuiltinType>() || instanceTy->is<MetatypeType>() ||
+//        (instanceTy->is<ProtocolCompositionType>() && instanceTy->getAs<ProtocolCompositionType>()->hasExplicitAnyObject())) {
+
+      // Perform standard value name lookup.
+      NameLookupOptions lookupOptions = defaultUnqualifiedLookupOptions;
+      auto lookup = TypeChecker::lookupUnqualified(DC, ref->getName(),
+                                                   ref->getLoc(),
+                                                   lookupOptions);
+
+      for (auto entry : lookup) {
+        // FIXME: Filter out certain candidates
+        OverloadChoice choice =
+            OverloadChoice(Type(), entry.getValueDecl(), ref->getFunctionRefKind());
+
+        result.addViable(choice);
+      }
+    }
+  }
+
   // Add key path result.
   // If we are including inaccessible members, check for the use of a keypath
   // subscript without a `keyPath:` label. Add it to the result so that it

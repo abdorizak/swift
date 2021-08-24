@@ -42,9 +42,9 @@ extension Unicode.UTF8 {
   @_alwaysEmitIntoClient
   public static func width(_ x: Unicode.Scalar) -> Int {
     switch x.value {
-      case 0..<0x80: return 1
-      case 0x80..<0x0800: return 2
-      case 0x0800..<0x1_0000: return 3
+      case (0 as UInt32)..<0x80: return 1
+      case (0x80 as UInt32)..<0x0800: return 2
+      case (0x0800 as UInt32)..<0x1_0000: return 3
       default: return 4
     }
   }

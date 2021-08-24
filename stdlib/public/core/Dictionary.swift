@@ -1364,7 +1364,7 @@ extension Dictionary {
       if
         lhs._variant.isNative,
         rhs._variant.isNative,
-        lhs._variant.asNative._storage === rhs._variant.asNative._storage
+        lhs._variant.asNative._storage === (rhs._variant.asNative._storage as AnyObject)
       {
         return true
       }

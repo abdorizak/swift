@@ -36,44 +36,44 @@ private func _hasGraphemeBreakBetween(
     // Unified CJK Han ideographs, common and some supplemental, amongst
     // others:
     //   U+3400 ~ U+A4CF
-    case 0x3400...0xa4cf: return true
+    case 0x3400...(0xa4cf as UInt32): return true
 
     // Repeat sub-300 check, this is beneficial for common cases of Latin
     // characters embedded within non-Latin script (e.g. newlines, spaces,
     // proper nouns and/or jargon, punctuation).
     //
     // NOTE: CR-LF special case has already been checked.
-    case 0x0000...0x02ff: return true
+    case 0x0000...(0x02ff as UInt32): return true
 
     // Non-combining kana:
     //   U+3041 ~ U+3096
     //   U+30A1 ~ U+30FC
-    case 0x3041...0x3096: return true
-    case 0x30a1...0x30fc: return true
+    case 0x3041...(0x3096 as UInt32): return true
+    case 0x30a1...(0x30fc as UInt32): return true
 
     // Non-combining modern (and some archaic) Cyrillic:
     //   U+0400 ~ U+0482 (first half of Cyrillic block)
-    case 0x0400...0x0482: return true
+    case 0x0400...(0x0482 as UInt32): return true
 
     // Modern Arabic, excluding extenders and prependers:
     //   U+061D ~ U+064A
-    case 0x061d...0x064a: return true
+    case 0x061d...(0x064a as UInt32): return true
 
     // Precomposed Hangul syllables:
     //   U+AC00 ~ U+D7AF
-    case 0xac00...0xd7af: return true
+    case 0xac00...(0xd7af as UInt32): return true
 
     // Common general use punctuation, excluding extenders:
     //   U+2010 ~ U+2029
-    case 0x2010...0x2029: return true
+    case 0x2010...(0x2029 as UInt32): return true
 
     // CJK punctuation characters, excluding extenders:
     //   U+3000 ~ U+3029
-    case 0x3000...0x3029: return true
+    case 0x3000...(0x3029 as UInt32): return true
 
     // Full-width forms:
     //   U+FF01 ~ U+FF9D
-    case 0xFF01...0xFF9D: return true
+    case 0xFF01...(0xFF9D as UInt32): return true
 
     default: return false
     }

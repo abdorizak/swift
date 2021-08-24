@@ -36,7 +36,7 @@ extension _NativeDictionary { // Bridging
     // Temporary var for SOME type safety.
     let nsDictionary: _NSDictionaryCore
 
-    if _storage === __RawDictionaryStorage.empty || count == 0 {
+    if (_storage as AnyObject) === __RawDictionaryStorage.empty || count == 0 {
       nsDictionary = __RawDictionaryStorage.empty
     } else if _isBridgedVerbatimToObjectiveC(Key.self),
       _isBridgedVerbatimToObjectiveC(Value.self) {

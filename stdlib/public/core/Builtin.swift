@@ -146,6 +146,31 @@ public func == (t0: Any.Type?, t1: Any.Type?) -> Bool {
   }
 }
 
+@inlinable
+public func == (t0: Any.Type, t1: Any.Type) -> Bool {
+  return Bool(Builtin.is_same_metatype(t0, t1))
+}
+
+@inlinable
+public func != (t0: Any.Type, t1: Any.Type) -> Bool {
+  return !(t0 == t1)
+}
+
+public extension Optional where Wrapped == Any.Type {
+  static func == (t0: Any.Type?, t1: Any.Type?) -> Bool {
+    switch (t0, t1) {
+    case (.none, .none): return true
+    case let (.some(ty0), .some(ty1)):
+      return Bool(Builtin.is_same_metatype(ty0, ty1))
+    default: return false
+    }
+  }
+
+  static func != (t0: Any.Type?, t1: Any.Type?) -> Bool {
+    return !(t0 == t1)
+  }
+}
+
 /// Returns a Boolean value indicating whether two types are not identical.
 ///
 /// - Parameters:
