@@ -11232,7 +11232,7 @@ ConstraintSystem::simplifyRestrictedConstraintImpl(
     }
 
     addContextualScore();
-    increaseScore(SK_UserConversion); // FIXME: Use separate score kind?
+    increaseScore(SK_AnyHashableConversion);
     if (worseThanBestSolution()) {
       return SolutionKind::Error;
     }
