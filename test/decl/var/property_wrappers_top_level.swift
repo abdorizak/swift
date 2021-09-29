@@ -1,4 +1,4 @@
-// RUN: %target-swift-frontend -typecheck -primary-file %s -verify -module-name main
+// RUN: %target-swift-frontend -emit-silgen -primary-file %s -verify -module-name main
 
 @propertyWrapper
 struct Wrapper<T> {
@@ -8,8 +8,10 @@ struct Wrapper<T> {
   }
 }
 
-// expected-error@+1{{property wrappers are not yet supported in top-level code}}
 @Wrapper var value: Int = 17
 
-func f() { }
+func f() {
+  _ = value
+  value = 20
+}
 f()

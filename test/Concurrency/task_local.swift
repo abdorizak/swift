@@ -17,7 +17,7 @@ struct TL {
   var notStatic: String? // expected-error{{property 'notStatic', must be static because property wrapper 'TaskLocal<String?>' can only be applied to static properties}}
 }
 
-@TaskLocal // expected-error{{property wrappers are not yet supported in top-level code}}
+@TaskLocal
 var global: Int = 0
 
 class NotSendable {}

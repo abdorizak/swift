@@ -459,12 +459,6 @@ AttachedPropertyWrappersRequest::evaluate(Evaluator &evaluator,
     // Check various restrictions on which properties can have wrappers
     // attached to them.
 
-    // Nor does top-level code.
-    if (var->getDeclContext()->isModuleScopeContext()) {
-      ctx.Diags.diagnose(attr->getLocation(), diag::property_wrapper_top_level);
-      continue;
-    }
-
     // Check that the variable is part of a single-variable pattern.
     auto binding = var->getParentPatternBinding();
     if (binding && binding->getSingleVar() != var) {
@@ -636,7 +630,7 @@ PropertyWrapperBackingPropertyTypeRequest::evaluate(
     auto *nominal = type->getDesugaredType()->getAnyNominal();
     if (auto wrappedInfo = nominal->getPropertyWrapperTypeInfo()) {
       if (wrappedInfo.requireNoEnclosingInstance &&
-          !var->isStatic()) {
+          !(var->isStatic() || var->getDeclContext()->isModuleScopeContext())) {
         ctx.Diags.diagnose(var->getNameLoc(),
                            diag::property_wrapper_var_must_be_static,
                            var->getName(), type);
