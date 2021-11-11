@@ -2087,7 +2087,19 @@ NeverNullType TypeResolver::resolveType(TypeRepr *repr,
 
   case TypeReprKind::Existential: {
     auto *existential = cast<ExistentialTypeRepr>(repr);
-    return resolveType(existential->getConstraint(), options);
+    auto constraintType = resolveType(existential->getConstraint(), options);
+
+    if (!options.contains(TypeResolutionFlags::SilenceErrors) &&
+        !constraintType->isExistentialType()) {
+      auto anyStart = existential->getAnyLoc();
+      auto anyEnd = Lexer::getLocForEndOfToken(
+          getASTContext().SourceMgr, anyStart);
+      diagnose(existential->getLoc(), diag::any_not_existential,
+               constraintType)
+          .fixItRemove({anyStart, anyEnd});
+    }
+
+    return constraintType;
   }
 
   case TypeReprKind::NamedOpaqueReturn:

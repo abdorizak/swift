@@ -4600,6 +4600,8 @@ ERROR(unchecked_not_inheritance_clause,none,
       "'unchecked' attribute only applies in inheritance clauses", ())
 ERROR(unchecked_not_existential,none,
       "'unchecked' attribute cannot apply to non-protocol type %0", (Type))
+ERROR(any_not_existential,none,
+      "'any' has no effect on concrete type %0", (Type))
 
 ERROR(nonisolated_let,none,
       "'nonisolated' is meaningless on 'let' declarations because "

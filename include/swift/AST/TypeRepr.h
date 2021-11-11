@@ -1157,6 +1157,7 @@ public:
       AnyLoc(anyLoc) {}
 
   TypeRepr *getConstraint() const { return Constraint; }
+  SourceLoc getAnyLoc() const { return AnyLoc; }
 
   static bool classof(const TypeRepr *T) {
     return T->getKind() == TypeReprKind::Existential;
