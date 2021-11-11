@@ -1850,6 +1850,10 @@ bool Traversal::visitNamedOpaqueReturnTypeRepr(NamedOpaqueReturnTypeRepr *T) {
   return doIt(T->getBase());
 }
 
+bool Traversal::visitExistentialTypeRepr(ExistentialTypeRepr *T) {
+  return doIt(T->getConstraint());
+}
+
 bool Traversal::visitPlaceholderTypeRepr(PlaceholderTypeRepr *T) {
   return false;
 }

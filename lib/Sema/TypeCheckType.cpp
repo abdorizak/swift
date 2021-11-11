@@ -2085,6 +2085,11 @@ NeverNullType TypeResolver::resolveType(TypeRepr *repr,
                                        : ErrorType::get(getASTContext());
   }
 
+  case TypeReprKind::Existential: {
+    auto *existential = cast<ExistentialTypeRepr>(repr);
+    return resolveType(existential->getConstraint(), options);
+  }
+
   case TypeReprKind::NamedOpaqueReturn:
     return resolveType(cast<NamedOpaqueReturnTypeRepr>(repr)->getBase(),
                        options);

@@ -2301,6 +2301,7 @@ directReferencesForTypeRepr(Evaluator &evaluator,
 
   case TypeReprKind::OpaqueReturn:
   case TypeReprKind::NamedOpaqueReturn:
+  case TypeReprKind::Existential:
     return { };
 
   case TypeReprKind::Fixed:
