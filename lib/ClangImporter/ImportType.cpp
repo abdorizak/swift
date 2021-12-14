@@ -1029,6 +1029,9 @@ namespace {
               Type importedTypeArg = ProtocolCompositionType::get(
                   Impl.SwiftContext, memberTypes,
                   hasExplicitAnyObject);
+              if (Impl.SwiftContext.LangOpts.EnableExplicitExistentialTypes) {
+                importedTypeArg = ExistentialType::get(importedTypeArg);
+              }
               importedTypeArgs.push_back(importedTypeArg);
             }
           }
@@ -1180,6 +1183,10 @@ namespace {
         importedType = ProtocolCompositionType::get(Impl.SwiftContext,
                                                     members,
                                                     /*HasExplicitAnyObject=*/false);
+
+        if (Impl.SwiftContext.LangOpts.EnableExplicitExistentialTypes) {
+          importedType = ExistentialType::get(importedType);
+        }
       }
 
       // Class or Class<P> maps to an existential metatype.
